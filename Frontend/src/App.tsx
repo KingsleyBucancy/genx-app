@@ -11,7 +11,7 @@ function App() {
   
   
   const generateCode = async () => {
-    const response = await fetch('http://localhost:8000/generate_code', {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/generate_code', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ idea: transcript })
