@@ -2,7 +2,7 @@
   "dependencies": {
     "@codesandbox/sandpack-react": "^2.20.0"
   }
-}
+
 {
   "name": "vite-react-typescript-starter",
   "private": true,
