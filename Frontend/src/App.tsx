@@ -1,11 +1,27 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Mic, MicOff, Sparkles, ArrowRight, Cpu, BrainCircuit } from 'lucide-react';
+import { Sandpack } from "@codesandbox/sandpack-react";
+
+
 
 function App() {
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState('');
+  const [code, setCode] = useState('');
   
-  // Speech recognition setup
+  
+  const generateCode = async () => {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/generate_code', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ idea: transcript })
+    });
+  
+    const data = await response.json();
+    setCode(data.code);
+  };
+  
+// Speech recognition setup
   const startListening = () => {
     if ('webkitSpeechRecognition' in window) {
       const recognition = new (window as any).webkitSpeechRecognition();
@@ -30,6 +46,8 @@ function App() {
       alert('Speech recognition is not supported in this browser.');
     }
   };
+
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white">
@@ -94,10 +112,31 @@ function App() {
           </div>
 
           {/* CTA Button */}
-          <button className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-full text-lg font-semibold flex items-center gap-2 mx-auto hover:shadow-lg hover:scale-105 transition-all duration-300">
+          <button
+           onClick={generateCode}
+           className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-full text-lg font-semibold flex items-center gap-2 mx-auto hover:shadow-lg hover:scale-105 transition-all duration-300">
             Start Your Project <ArrowRight className="w-5 h-5" />
-          </button>
-        </div>
+            </button>
+            {code && (
+            <div className="mt-12">
+              <h2 className="text-xl font-bold text-purple-400 mb-4">Live Preview:</h2>
+              <div className="rounded-xl overflow-hidden border border-gray-700 shadow-lg">
+                <Sandpack
+                template="react"
+                files={{
+                  "/App.js": code,
+                }}
+                options={{
+                  showNavigator: true,
+                  showTabs: true,
+                  showLineNumbers: true,
+                  wrapContent: true,
+                }}
+                />
+                </div>
+                </div>
+                )}
+              </div>
 
         {/* Features Grid */}
         <div className="grid md:grid-cols-3 gap-8 mt-24">
